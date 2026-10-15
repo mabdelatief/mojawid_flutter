@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Aref+Ruqaa:wght@700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E6DFD1;font-family:Jost,sans-serif;color:#1C2A30}a{color:#1F4F5C}a:hover{color:#C49A3F}button{font:inherit}select{font:inherit}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;gap:48px;align-items:flex-start;justify-content:center;padding:48px 32px;box-sizing:border-box;flex-wrap:wrap">
+  <aside style="width:240px;display:flex;flex-direction:column;gap:20px;padding-top:24px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#6B6A60">Mojawid · iPhone prototype</span>
+      <span style="font-size:15px;line-height:1.5;color:#4A5357">Clickable. Use the app, or jump to a screen.</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <sc-for list="{{ jumps }}" as="j" hint-placeholder-count="10">
+        <button onClick="{{ j.on }}" style="text-align:left;border:0;background:{{ j.bg }};color:#1C2A30;border-radius:10px;padding:9px 12px;font-size:14px;cursor:pointer">{{ j.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #D2C8B4;padding-top:16px">
+      <button onClick="{{ toggleDark }}" style="text-align:left;border:1px solid #D2C8B4;background:transparent;border-radius:10px;padding:9px 12px;font-size:14px;cursor:pointer">{{ darkLabel }}</button>
+      <span style="font-size:13px;line-height:1.5;color:#6B6A60">Scenario and upload failure are in Tweaks.</span>
+    </div>
+  </aside>
+
+  <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ dark }}" hint-size="402px,874px">
+  <div dir="rtl" style="--bg:{{ th.bg }};--sf:{{ th.sf }};--sf2:{{ th.sf2 }};--ink:{{ th.ink }};--mu:{{ th.mu }};--ln:{{ th.ln }};--pr:{{ th.pr }};--onpr:{{ th.onpr }};--gd:{{ th.gd }};--mis:{{ th.mis }};--misbg:{{ th.misbg }};--unc:{{ th.unc }};--uncbg:{{ th.uncbg }};--ok:{{ th.ok }};--okbg:{{ th.okbg }};--ov:{{ th.ov }};height:100%;position:relative;display:flex;flex-direction:column;background:var(--bg,#F6F1E7);color:var(--ink,#1C2A30);font-family:'Noto Naskh Arabic',serif;overflow:hidden">
+
+    <!-- HOME -->
+    <sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:58px 16px 6px;display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;flex:1">
+          <dc-import name="MojawidMark" variant="m" ink="{{ markInk }}" accent="{{ markAcc }}" knock="{{ markKnock }}" style="width:30px;height:30px" hint-size="30px,30px"></dc-import>
+          <div dir="rtl" style="display:flex;align-items:baseline;font-family:'Aref Ruqaa',serif;font-weight:700;font-size:30px;line-height:1.5;color:{{ wmInk }}"><span style="position:relative">مُجَو<dc-import name="MojawidMark" variant="g" ink="{{ wmInk }}" accent="{{ markAcc }}" style="position:absolute;width:0.5em;height:0.5em;left:-0.08em;top:0.1em" hint-size="15px,15px"></dc-import></span><span>د</span></div>
+        </div>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:10px 16px 16px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;background:var(--sf2,#EFE8DA);border-radius:14px;padding:4px;gap:4px">
+          <button onClick="{{ setModeChoose }}" style="flex:1;height:40px;border:0;border-radius:11px;cursor:pointer;font-size:15px;background:{{ modeChooseBg }};color:var(--ink,#1C2A30);box-shadow:{{ modeChooseSh }}">سأختار الآيات</button>
+          <button onClick="{{ setModeAuto }}" style="flex:1;height:40px;border:0;border-radius:11px;cursor:pointer;font-size:15px;background:{{ modeAutoBg }};color:var(--ink,#1C2A30);box-shadow:{{ modeAutoSh }}">تعرّف عليها تلقائيًا</button>
+        </div>
+
+        <sc-if value="{{ is.choose }}" hint-placeholder-val="{{ true }}">
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu,#5E6461)">السورة
+              <select value="{{ surah }}" onChange="{{ onSurah }}" style="height:44px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--bg,#F6F1E7);color:var(--ink,#1C2A30);padding:0 12px;font-size:16px">
+                <option value="76">٧٦ · الإنسان</option>
+                <option value="1" disabled>١ · الفاتحة (في التطبيق)</option>
+                <option value="67" disabled>٦٧ · الملك (في التطبيق)</option>
+              </select>
+            </label>
+            <div style="display:flex;gap:10px">
+              <label style="flex:1;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu,#5E6461)">من الآية
+                <select value="{{ from }}" onChange="{{ onFrom }}" style="height:44px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--bg,#F6F1E7);color:var(--ink,#1C2A30);padding:0 12px;font-size:16px">
+                  <option value="7">٧</option><option value="8">٨</option><option value="9">٩</option><option value="10">١٠</option>
+                </select>
+              </label>
+              <label style="flex:1;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu,#5E6461)">إلى الآية
+                <select value="{{ to }}" onChange="{{ onTo }}" style="height:44px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--bg,#F6F1E7);color:var(--ink,#1C2A30);padding:0 12px;font-size:16px">
+                  <option value="7">٧</option><option value="8">٨</option><option value="9">٩</option><option value="10">١٠</option>
+                </select>
+              </label>
+            </div>
+            <div style="display:flex;gap:18px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:8px;font-size:15px;min-height:32px;cursor:pointer"><input type="checkbox" checked="{{ istiadha }}" onChange="{{ onIstiadha }}" style="width:20px;height:20px;accent-color:var(--pr,#1F4F5C)">تبدأ بالاستعاذة</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:15px;min-height:32px;cursor:pointer"><input type="checkbox" checked="{{ basmala }}" onChange="{{ onBasmala }}" style="width:20px;height:20px;accent-color:var(--pr,#1F4F5C)">تبدأ بالبسملة</label>
+            </div>
+          </div>
+
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;position:relative">
+            <button onClick="{{ playAllToggle }}" style="height:40px;padding:0 14px;border-radius:12px;border:0;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer">
+              <sc-if value="{{ playingAll }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="1" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="7" y="1" width="3" height="10" rx="1" fill="currentColor"></rect></svg></sc-if>
+              <sc-if value="{{ notPlayingAll }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 1 L11 6 L3 11 Z" fill="currentColor"></path></svg></sc-if>
+              استمع للآيات
+            </button>
+            <button onClick="{{ toggleReciterMenu }}" style="flex:1;min-width:0;height:40px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--bg,#F6F1E7);color:var(--ink,#1C2A30);padding:0 12px;font-size:14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+              <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ reciterName }}</span><span style="color:var(--mu,#5E6461)">▾</span>
+            </button>
+            <sc-if value="{{ reciterOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:58px;left:14px;right:14px;z-index:5;background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,0.15);overflow:hidden">
+                <div style="padding:10px 14px 4px;font-size:12px;color:var(--mu,#5E6461)">القارئ لهذه الجلسة · الافتراضي من الإعدادات</div>
+                <sc-for list="{{ reciters }}" as="r" hint-placeholder-count="4">
+                  <button onClick="{{ r.on }}" style="width:100%;text-align:start;border:0;background:{{ r.bg }};color:var(--ink,#1C2A30);padding:12px 14px;font-size:15px;cursor:pointer;display:flex;justify-content:space-between"><span>{{ r.name }}</span><span style="color:var(--pr,#1F4F5C)">{{ r.mark }}</span></button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:16px 14px;display:flex;flex-direction:column;gap:10px">
+            <sc-if value="{{ istiadha }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Amiri Quran',serif;font-size:21px;line-height:2.1;text-align:center;color:var(--mu,#5E6461)">أَعُوذُ بِٱللَّهِ مِنَ ٱلشَّيْطَٰنِ ٱلرَّجِيمِ</div></sc-if>
+            <sc-if value="{{ basmala }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Amiri Quran',serif;font-size:21px;line-height:2.1;text-align:center;color:var(--mu,#5E6461)">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div></sc-if>
+            <div style="font-family:'Amiri Quran',serif;font-size:25px;line-height:2.35;text-align:justify">
+              <sc-for list="{{ ayat }}" as="a" hint-placeholder-count="4">
+                <sc-for list="{{ a.words }}" as="w"><span onClick="{{ w.onTap }}" style="cursor:pointer;border-radius:6px;background:{{ w.bg }}"><sc-for list="{{ w.segs }}" as="s"><span style="color:{{ s.color }}">{{ s.t }}</span></sc-for></span> </sc-for><span onClick="{{ a.onPlay }}" style="color:var(--gd,#9A7428);cursor:pointer;border-radius:8px;background:{{ a.playBg }}">{{ a.mark }}</span> 
+              </sc-for>
+            </div>
+            <div style="font-size:12px;color:var(--mu,#5E6461)">اضغط على كلمة لتسمعها من القارئ، أو على رقم الآية لسماعها كاملة</div>
+            <div style="border-top:1px solid var(--ln,#E3D9C5);padding-top:10px;display:flex;flex-wrap:wrap;gap:8px 16px">
+              <sc-for list="{{ tjLegend }}" as="l" hint-placeholder-count="7">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;line-height:1.5;white-space:nowrap;opacity:{{ l.op }}"><span style="width:10px;height:10px;border-radius:3px;flex:none;background:{{ l.color }}"></span><span>{{ l.label }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ is.auto }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+            <dc-import name="MojawidMark" variant="m" ink="{{ markInk }}" accent="{{ markAcc }}" knock="{{ markKnock }}" style="width:64px;height:64px" hint-size="64px,64px"></dc-import>
+            <div style="font-size:19px;font-weight:700">اقرأ ما تشاء</div>
+            <div style="font-size:15px;line-height:1.7;color:var(--mu,#5E6461);text-wrap:pretty">سنتعرّف على الآيات من تلاوتك، ثم نعرض ما سمعناه. إن تشابهت المواضع سنريك الاحتمالات.</div>
+          </div>
+        </sc-if>
+        <div style="font-size:12.5px;line-height:1.6;color:var(--mu,#5E6461);text-align:center;padding:0 12px">تبقى تسجيلاتك على هاتفك. لا تُشارَك إلا إذا أبلغت عن نتيجة ووافقت.</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--ln,#E3D9C5);background:var(--bg,#F6F1E7)">
+        <button onClick="{{ startRecord }}" style="width:100%;height:56px;border:0;border-radius:16px;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:19px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px"><span style="width:12px;height:12px;border-radius:99px;background:var(--gd,#C49A3F)"></span>ابدأ التسجيل</button>
+      </div>
+    </sc-if>
+
+    <!-- RECORD -->
+    <sc-if value="{{ is.record }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 6px;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ backFromRecord }}" aria-label="رجوع" style="width:40px;height:40px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2 L10 7 L5 12"></path></svg></button>
+        <div style="flex:1;display:flex;flex-direction:column">
+          <span style="font-size:16px;font-weight:700">{{ rangeLabel }}</span>
+          <span style="font-size:12.5px;color:var(--mu,#5E6461)">{{ attemptLabelNext }}</span>
+        </div>
+        <button onClick="{{ playAllToggle }}" style="height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);display:flex;align-items:center;gap:6px;font-size:13.5px;cursor:pointer">
+          <sc-if value="{{ playingAll }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 12 12"><rect x="2" y="1" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="7" y="1" width="3" height="10" rx="1" fill="currentColor"></rect></svg></sc-if>
+          <sc-if value="{{ notPlayingAll }}" hint-placeholder-val="{{ true }}"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M3 1 L11 6 L3 11 Z" fill="currentColor"></path></svg></sc-if>
+          القارئ
+        </button>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:8px 18px">
+        <div style="font-family:'Amiri Quran',serif;font-size:24px;line-height:2.3;text-align:justify;opacity:{{ textOp }}">
+          <sc-if value="{{ is.auto }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Noto Naskh Arabic',serif;font-size:16px;line-height:1.7;color:var(--mu,#5E6461);text-align:center;padding:40px 10px">اقرأ ما تشاء من القرآن. سنتعرّف على الآيات بعد التسجيل.</div></sc-if>
+          <sc-if value="{{ is.choose }}" hint-placeholder-val="{{ true }}">
+            <sc-for list="{{ ayat }}" as="a" hint-placeholder-count="4">
+              <span style="border-radius:8px;background:{{ a.playBg }}"><sc-for list="{{ a.segs }}" as="s"><span style="color:{{ s.color }}">{{ s.t }}</span></sc-for> <span style="color:var(--gd,#9A7428)">{{ a.mark }}</span> </span>
+            </sc-for>
+          </sc-if>
+        </div>
+      </div>
+      <div style="padding:14px 16px 34px;border-top:1px solid var(--ln,#E3D9C5);display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--bg,#F6F1E7)">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <span style="font-size:34px;font-weight:700;font-variant-numeric:tabular-nums">{{ elapsed }}</span>
+          <span style="font-size:14px;color:{{ remainColor }}">{{ remaining }}</span>
+        </div>
+        <div style="position:relative;width:112px;height:112px;display:flex;align-items:center;justify-content:center">
+          <svg width="112" height="112" viewBox="0 0 112 112" style="position:absolute;inset:0;transform:rotate(-90deg)">
+            <circle cx="56" cy="56" r="52" fill="none" stroke="var(--ln,#E3D9C5)" stroke-width="5"></circle>
+            <circle cx="56" cy="56" r="52" fill="none" stroke="var(--gd,#C49A3F)" stroke-width="5" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="{{ ringOffset }}"></circle>
+          </svg>
+          <button onClick="{{ toggleRec }}" aria-label="{{ recAria }}" style="width:88px;height:88px;border-radius:99px;border:0;background:var(--pr,#1F4F5C);display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <sc-if value="{{ recording }}" hint-placeholder-val="{{ false }}"><span style="width:28px;height:28px;border-radius:6px;background:var(--onpr,#F6F1E7)"></span></sc-if>
+            <sc-if value="{{ notRecording }}" hint-placeholder-val="{{ true }}"><span style="width:30px;height:30px;border-radius:99px;background:var(--gd,#C49A3F)"></span></sc-if>
+          </button>
+        </div>
+        <span style="font-size:14px;color:var(--mu,#5E6461)">{{ recHint }}</span>
+        <label style="font-size:14px;color:var(--pr,#1F4F5C);text-decoration:underline;text-underline-offset:4px;cursor:pointer;min-height:32px;display:flex;align-items:center">أو اختر ملفًا صوتيًا<input type="file" accept="audio/*" onChange="{{ onFile }}" style="display:none"></label>
+      </div>
+    </sc-if>
+
+    <!-- DENIED -->
+    <sc-if value="{{ is.denied }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 6px;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ nav.home }}" aria-label="رجوع" style="width:40px;height:40px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2 L10 7 L5 12"></path></svg></button>
+      </div>
+      <div style="flex:1;padding:40px 28px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center">
+        <div style="width:72px;height:72px;border-radius:99px;background:var(--sf2,#EFE8DA);display:flex;align-items:center;justify-content:center"><span style="width:22px;height:34px;border-radius:12px;border:3px solid var(--mu,#5E6461)"></span></div>
+        <div style="font-size:21px;font-weight:700">نحتاج إلى الميكروفون لسماع تلاوتك</div>
+        <div style="font-size:15.5px;line-height:1.8;color:var(--mu,#5E6461);text-wrap:pretty">لم يُسمح لمُجَوِّد باستخدام الميكروفون. يمكنك السماح به من إعدادات الهاتف في أي وقت، ويبقى التسجيل على هاتفك.</div>
+        <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:14px;padding:12px 16px;font-size:14.5px;line-height:1.8;width:100%;box-sizing:border-box">الإعدادات ← مُجَوِّد ← الميكروفون</div>
+      </div>
+      <div style="padding:12px 16px 34px;display:flex;flex-direction:column;gap:8px">
+        <button onClick="{{ openSettingsGrant }}" style="width:100%;height:56px;border:0;border-radius:16px;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:18px;font-weight:700;cursor:pointer">فتح إعدادات الهاتف</button>
+        <label style="width:100%;height:48px;border-radius:16px;border:1px solid var(--ln,#E3D9C5);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;box-sizing:border-box">اختر ملفًا صوتيًا بدلًا من ذلك<input type="file" accept="audio/*" onChange="{{ onFile }}" style="display:none"></label>
+      </div>
+    </sc-if>
+
+    <!-- WAITING -->
+    <sc-if value="{{ is.waiting }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;padding:120px 28px 20px;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center">
+        <dc-import name="MojawidMark" variant="m" ink="{{ markInk }}" accent="{{ markAcc }}" knock="{{ markKnock }}" style="width:84px;height:84px" hint-size="84px,84px"></dc-import>
+        <sc-if value="{{ waitOk }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:21px;font-weight:700">{{ waitTitle }}</div>
+          <div style="width:100%;max-width:260px;height:6px;border-radius:9px;background:var(--ln,#E3D9C5);overflow:hidden;flex:none"><div style="height:100%;width:{{ waitPct }};background:var(--gd,#C49A3F);border-radius:9px;transition:width .2s"></div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:15px;width:100%;max-width:260px">
+            <div style="display:flex;justify-content:space-between;color:{{ step1Color }}"><span>إرسال التسجيل للتحليل</span><span>{{ step1Mark }}</span></div>
+            <div style="display:flex;justify-content:space-between;color:{{ step2Color }}"><span>الاستماع إلى التلاوة</span><span>{{ step2Mark }}</span></div>
+          </div>
+          <div style="font-size:13.5px;color:var(--mu,#5E6461)">يستغرق عادةً بضع ثوانٍ</div>
+        </sc-if>
+        <sc-if value="{{ waitFailed }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:21px;font-weight:700">لم يصل التسجيل بعد</div>
+          <div style="font-size:15.5px;line-height:1.8;color:var(--mu,#5E6461);text-wrap:pretty">يبدو أن الاتصال ضعيف. تسجيلك محفوظ على هاتفك، وسنرسله مرة أخرى تلقائيًا {{ retryText }}.</div>
+          <button onClick="{{ retryNow }}" style="height:48px;padding:0 24px;border-radius:14px;border:1px solid var(--pr,#1F4F5C);background:transparent;color:var(--pr,#1F4F5C);font-size:16px;cursor:pointer">أعد الإرسال الآن</button>
+        </sc-if>
+      </div>
+      <div style="padding:12px 16px 34px">
+        <button onClick="{{ cancelWait }}" style="width:100%;height:50px;border-radius:16px;border:1px solid var(--ln,#E3D9C5);background:transparent;color:var(--ink,#1C2A30);font-size:16px;cursor:pointer">إلغاء</button>
+      </div>
+    </sc-if>
+
+    <!-- RESULT -->
+    <sc-if value="{{ is.result }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 8px;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ nav.home }}" aria-label="إغلاق" style="width:40px;height:40px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2 L10 10 M10 2 L2 10"></path></svg></button>
+        <div style="flex:1;display:flex;flex-direction:column">
+          <span style="font-size:16px;font-weight:700">{{ rangeLabel }}</span>
+          <span style="font-size:12.5px;color:var(--mu,#5E6461)">{{ res.attemptLabel }}</span>
+        </div>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:4px 16px 20px;display:flex;flex-direction:column;gap:12px">
+        <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:20px;font-weight:700;line-height:1.5">{{ res.summary }}</div>
+          <sc-if value="{{ res.hasOutcome }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;line-height:1.7;color:var(--pr,#1F4F5C)">{{ res.outcome }}</div></sc-if>
+          <sc-if value="{{ is.auto }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:14px;line-height:1.7;color:var(--mu,#5E6461)">تعرّفنا على: <b style="color:var(--ink,#1C2A30)">الإنسان ٧–١٠</b> · تطابق أيضًا: الإنسان ٨–١٠</div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;background:var(--sf2,#EFE8DA);border-radius:14px;padding:4px;gap:4px">
+          <button onClick="{{ viewMis }}" style="flex:1;height:38px;border:0;border-radius:11px;cursor:pointer;font-size:15px;background:{{ misTabBg }};color:var(--ink,#1C2A30);box-shadow:{{ misTabSh }}">ملاحظاتي</button>
+          <button onClick="{{ viewTj }}" style="flex:1;height:38px;border:0;border-radius:11px;cursor:pointer;font-size:15px;background:{{ tjTabBg }};color:var(--ink,#1C2A30);box-shadow:{{ tjTabSh }}">القراءة الصحيحة</button>
+        </div>
+
+        <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px">
+          <sc-if value="{{ isMisView }}" hint-placeholder-val="{{ true }}">
+            <div style="font-family:'Amiri Quran',serif;font-size:25px;line-height:2.6;text-align:justify">
+              <sc-for list="{{ res.ayat }}" as="a" hint-placeholder-count="4">
+                <sc-for list="{{ a.words }}" as="w"><span onClick="{{ w.onTap }}" style="cursor:{{ w.cursor }};background:{{ w.bg }};border-radius:6px;padding:0 2px;text-decoration-line:{{ w.line }};text-decoration-style:{{ w.dstyle }};text-decoration-color:{{ w.dcolor }};text-decoration-thickness:{{ w.thick }};text-underline-offset:12px;text-decoration-skip-ink:none">{{ w.t }}</span><sc-if value="{{ w.hasBadge }}"><span onClick="{{ w.onTap }}" style="display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;font-family:'Noto Naskh Arabic',serif;font-size:11px;line-height:1;vertical-align:super;background:{{ w.badgeBg }};color:{{ w.badgeFg }};margin-inline-start:1px;cursor:pointer">{{ w.badge }}</span></sc-if><sc-if value="{{ w.hasStop }}"><span style="display:inline-flex;align-items:center;height:20px;padding:0 6px;border-radius:6px;border:1px solid var(--ln,#E3D9C5);font-family:'Noto Naskh Arabic',serif;font-size:11.5px;line-height:1;vertical-align:middle;color:var(--mu,#5E6461);margin:0 3px">{{ w.stopLabel }}</span></sc-if> </sc-for><span style="color:var(--gd,#9A7428)">{{ a.mark }}</span> 
+              </sc-for>
+            </div>
+            <div style="border-top:1px solid var(--ln,#E3D9C5);padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:12.5px;line-height:1.4">
+              <div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:12px;border-radius:3px;background:var(--misbg);border-bottom:3px solid var(--mis)"></span>حرف مختلف</div>
+              <div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:0;border-bottom:3px solid var(--mis)"></span>حركة مختلفة</div>
+              <div style="display:flex;align-items:center;gap:8px"><span style="width:22px;text-align:center;color:var(--mis);font-size:16px;line-height:0.5">〰</span>حكم تجويد</div>
+              <div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:0;border-bottom:3px dotted var(--unc)"></span>غير مؤكَّد</div>
+              <div style="display:flex;align-items:center;gap:8px"><span style="padding:0 4px;border:1px solid var(--ln);border-radius:4px;font-size:10.5px">وقف</span>توقّف وسط الآية</div>
+              <div style="display:flex;align-items:center;gap:8px"><span style="padding:0 4px;border:1px solid var(--ln);border-radius:4px;font-size:10.5px">↩</span>توقّف ثم أعاد</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isTjView }}" hint-placeholder-val="{{ false }}">
+            <div style="font-family:'Amiri Quran',serif;font-size:25px;line-height:2.35;text-align:justify">
+              <sc-for list="{{ ayat }}" as="a" hint-placeholder-count="4"><sc-for list="{{ a.words }}" as="w"><span onClick="{{ w.onTap }}" style="cursor:pointer;border-radius:6px;background:{{ w.bg }}"><sc-for list="{{ w.segs }}" as="s"><span style="color:{{ s.color }}">{{ s.t }}</span></sc-for></span> </sc-for><span onClick="{{ a.onPlay }}" style="color:var(--gd,#9A7428);cursor:pointer;border-radius:8px;background:{{ a.playBg }}">{{ a.mark }}</span> </sc-for>
+            </div>
+            <div style="border-top:1px solid var(--ln,#E3D9C5);padding-top:10px;display:flex;flex-wrap:wrap;gap:8px 16px">
+              <sc-for list="{{ tjLegend }}" as="l" hint-placeholder-count="7">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;line-height:1.5;white-space:nowrap;opacity:{{ l.op }}"><span style="width:10px;height:10px;border-radius:3px;flex:none;background:{{ l.color }}"></span><span>{{ l.label }}</span></div>
+              </sc-for>
+            </div>
+            <div style="font-size:12.5px;color:var(--mu,#5E6461)">القراءة الصحيحة بألوان التجويد. اضغط على كلمة لتسمعها من القارئ. هذه الألوان ليست ملاحظات على تلاوتك.</div>
+          </sc-if>
+        </div>
+
+        <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:6px 14px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--ln,#E3D9C5)">
+            <button onClick="{{ toggleMyPlay }}" aria-label="تشغيل تسجيلي" style="width:40px;height:40px;border-radius:99px;border:0;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none">
+              <sc-if value="{{ myPlaying }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="1" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="7" y="1" width="3" height="10" rx="1" fill="currentColor"></rect></svg></sc-if>
+              <sc-if value="{{ myNotPlaying }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 1 L11 6 L3 11 Z" fill="currentColor"></path></svg></sc-if>
+            </button>
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;font-size:14.5px"><span>تسجيلي</span><span style="color:var(--mu,#5E6461)">{{ res.dur }}</span></div>
+              <div style="height:4px;border-radius:4px;background:var(--ln,#E3D9C5);overflow:hidden;flex:none"><div style="height:100%;width:{{ myPct }};background:var(--gd,#C49A3F)"></div></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0">
+            <button onClick="{{ playAllToggle }}" aria-label="تشغيل القارئ" style="width:40px;height:40px;border-radius:99px;border:1px solid var(--pr,#1F4F5C);background:transparent;color:var(--pr,#1F4F5C);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none">
+              <sc-if value="{{ playingAll }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="1" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="7" y="1" width="3" height="10" rx="1" fill="currentColor"></rect></svg></sc-if>
+              <sc-if value="{{ notPlayingAll }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 1 L11 6 L3 11 Z" fill="currentColor"></path></svg></sc-if>
+            </button>
+            <div style="flex:1;min-width:0;display:flex;justify-content:space-between;gap:8px;font-size:14.5px"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">القارئ: {{ reciterName }}</span><span style="color:var(--mu,#5E6461);white-space:nowrap;flex:none">{{ reciterPos }}</span></div>
+          </div>
+        </div>
+
+        <sc-if value="{{ res.hasCompare }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:15px;font-weight:700">منذ المحاولة السابقة</div>
+            <sc-for list="{{ res.fixed }}" as="f" hint-placeholder-count="0">
+              <div style="display:flex;align-items:center;gap:10px;background:var(--okbg);border-radius:12px;padding:10px 12px">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M3 8.5 L6.5 12 L13 4"></path></svg>
+                <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:14.5px;color:var(--ok)">أحسنت، صحّحت هذا الموضع</span><span style="font-family:'Amiri Quran',serif;font-size:19px;line-height:1.9">{{ f.word }}</span></div>
+                <span style="font-size:12.5px;color:var(--mu,#5E6461);white-space:nowrap">{{ f.kind }}</span>
+              </div>
+            </sc-for>
+            <sc-for list="{{ res.remain }}" as="f" hint-placeholder-count="0">
+              <button onClick="{{ f.on }}" style="display:flex;align-items:center;gap:10px;border:1px solid var(--ln,#E3D9C5);background:transparent;color:var(--ink,#1C2A30);border-radius:12px;padding:10px 12px;cursor:pointer;text-align:start">
+                <span style="width:16px;height:16px;border-radius:99px;border:2px solid var(--mis);flex:none;box-sizing:border-box"></span>
+                <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:14.5px">{{ f.note }}</span><span style="font-family:'Amiri Quran',serif;font-size:19px;line-height:1.9">{{ f.word }}</span></div>
+                <span style="font-size:12.5px;color:var(--mu,#5E6461);white-space:nowrap">{{ f.kind }}</span>
+              </button>
+            </sc-for>
+            <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ln,#E3D9C5);padding-top:12px">
+              <span style="font-size:13px;color:var(--mu,#5E6461)">محاولات هذه الجلسة · المواضع للمراجعة (دون غير المؤكَّدة)</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ res.runChips }}" as="c" hint-placeholder-count="2">
+                  <button onClick="{{ c.on }}" style="min-width:64px;padding:8px 10px;border-radius:12px;border:{{ c.border }};background:{{ c.bg }};color:var(--ink,#1C2A30);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <span style="font-size:12px;color:var(--mu,#5E6461)">{{ c.label }}</span>
+                    <span style="display:flex;gap:3px;min-height:8px"><sc-for list="{{ c.dots }}" as="d"><span style="width:7px;height:7px;border-radius:9px;background:var(--mis)"></span></sc-for><sc-if value="{{ c.clear }}"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5 L4.5 8 L10.5 1.5"></path></svg></sc-if></span>
+                    <span style="font-size:13px">{{ c.count }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="font-size:13px;line-height:1.7;color:var(--mu,#5E6461);border-inline-start:2px solid var(--gd,#C49A3F);padding:2px 10px">الملاحظات الآلية قد تخطئ ولا تغني عن المعلّم المجاز</div>
+
+        <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:18px;overflow:hidden;flex:none">
+          <button onClick="{{ toggleAdv }}" style="width:100%;height:52px;border:0;background:transparent;color:var(--ink,#1C2A30);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15.5px;cursor:pointer"><span style="white-space:nowrap">تحليل متقدّم</span><span style="color:var(--mu,#5E6461);font-size:13px;white-space:nowrap">{{ advArrow }}</span></button>
+          <sc-if value="{{ adv }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 14px 14px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none">
+                <sc-for list="{{ advTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.on }}" style="flex:none;white-space:nowrap;height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--ln,#E3D9C5);background:{{ t.bg }};color:{{ t.fg }};font-size:13.5px;cursor:pointer">{{ t.label }}</button></sc-for>
+              </div>
+              <sc-if value="{{ advPh }}" hint-placeholder-val="{{ true }}">
+                <sc-for list="{{ res.phon }}" as="p" hint-placeholder-count="2">
+                  <div style="border:1px solid var(--ln,#E3D9C5);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:12.5px;color:var(--mu,#5E6461)">الآية {{ p.n }}</span>
+                    <div style="display:flex;gap:8px;align-items:baseline"><span style="font-size:12px;color:var(--mu,#5E6461);width:52px;flex:none">المتوقَّع</span><div style="font-size:17px;line-height:1.9"><sc-for list="{{ p.exp }}" as="k"><span style="background:{{ k.bg }};border-radius:4px;padding:0 2px">{{ k.t }}</span> </sc-for></div></div>
+                    <div style="display:flex;gap:8px;align-items:baseline"><span style="font-size:12px;color:var(--mu,#5E6461);width:52px;flex:none">المسموع</span><div style="font-size:17px;line-height:1.9"><sc-for list="{{ p.got }}" as="k"><span style="background:{{ k.bg }};border-radius:4px;padding:0 2px">{{ k.t }}</span> </sc-for></div></div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ res.noPhon }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--mu,#5E6461)">لا فروق في هذه المحاولة.</div></sc-if>
+              </sc-if>
+              <sc-if value="{{ advTbl }}" hint-placeholder-val="{{ false }}">
+                <sc-for list="{{ res.table }}" as="r" hint-placeholder-count="3">
+                  <div style="border:1px solid var(--ln,#E3D9C5);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px;line-height:1.6">
+                    <span style="color:var(--mu,#5E6461)">الموضع</span><span>{{ r.place }}</span>
+                    <span style="color:var(--mu,#5E6461)">النوع</span><span style="color:{{ r.color }}">{{ r.type }}</span>
+                    <span style="color:var(--mu,#5E6461)">التغيير</span><span>{{ r.change }}</span>
+                    <span style="color:var(--mu,#5E6461)">القاعدة</span><span>{{ r.rule }}</span>
+                    <span style="color:var(--mu,#5E6461)">المتوقَّع</span><span>{{ r.exp }}</span>
+                    <span style="color:var(--mu,#5E6461)">المسموع</span><span>{{ r.got }}</span>
+                    <span style="color:var(--mu,#5E6461)">الحركات</span><span>{{ r.madd }}</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ res.noTable }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--mu,#5E6461)">لا مواضع في هذه المحاولة.</div></sc-if>
+              </sc-if>
+              <sc-if value="{{ advSif }}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{ res.hasSifat }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:13px;color:var(--mu,#5E6461)">صفات حروف «قَمْطَرِيرًا» · اسحب جانبيًا لبقية الأعمدة</div>
+                  <div style="overflow-x:auto;scrollbar-width:thin;border:1px solid var(--ln,#E3D9C5);border-radius:12px">
+                    <table style="border-collapse:separate;border-spacing:0;font-size:13.5px;min-width:560px;width:100%">
+                      <thead><tr>
+                        <th style="position:sticky;right:0;background:var(--sf2,#EFE8DA);padding:8px 10px;text-align:start;font-weight:600">الحرف</th>
+                        <sc-for list="{{ sifatCols }}" as="c" hint-placeholder-count="6"><th style="background:var(--sf2,#EFE8DA);padding:8px 10px;text-align:start;font-weight:600;white-space:nowrap">{{ c }}</th></sc-for>
+                      </tr></thead>
+                      <tbody>
+                        <sc-for list="{{ sifat }}" as="r" hint-placeholder-count="6"><tr>
+                          <td style="position:sticky;right:0;background:{{ r.headBg }};padding:8px 10px;font-family:'Amiri Quran',serif;font-size:20px;border-top:1px solid var(--ln,#E3D9C5)">{{ r.letter }}</td>
+                          <sc-for list="{{ r.cells }}" as="c"><td style="padding:8px 10px;border-top:1px solid var(--ln,#E3D9C5);white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }}">{{ c.t }}</td></sc-for>
+                        </tr></sc-for>
+                      </tbody>
+                    </table>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ res.noSifat }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--mu,#5E6461)">لا فروق في صفات الحروف في هذه المحاولة.</div></sc-if>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ newRecitation }}" style="flex:1;height:46px;border-radius:14px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);font-size:15px;cursor:pointer">تلاوة جديدة</button>
+          <button onClick="{{ openReport }}" style="flex:1;height:46px;border-radius:14px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);font-size:15px;cursor:pointer">نتيجة غير صحيحة؟</button>
+        </div>
+      </div>
+      <div style="padding:12px 16px 34px;border-top:1px solid var(--ln,#E3D9C5);background:var(--bg,#F6F1E7);display:flex;gap:8px">
+        <button onClick="{{ tryAgain }}" style="flex:1;height:56px;border:0;border-radius:16px;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:19px;font-weight:700;cursor:pointer">حاول مرة أخرى</button>
+        <sc-if value="{{ res.hasFocusAyah }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ practiseAyah }}" style="height:56px;width:104px;flex:none;padding:0 8px;border-radius:16px;border:1px solid var(--pr,#1F4F5C);background:transparent;color:var(--pr,#1F4F5C);font-size:13.5px;line-height:1.35;cursor:pointer;white-space:pre-line">{{ res.focusLabel }}</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- REPORT -->
+    <sc-if value="{{ is.report }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 8px;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ nav.result }}" aria-label="رجوع" style="width:40px;height:40px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2 L10 7 L5 12"></path></svg></button>
+        <span style="font-size:17px;font-weight:700">الإبلاغ عن نتيجة غير صحيحة</span>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:6px 16px 20px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:14px;color:var(--mu,#5E6461)">ما الذي يبدو غير صحيح؟ (اختياري)</span>
+          <sc-for list="{{ reportCats }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.on }}" style="display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:14px;border:{{ c.border }};background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);font-size:15px;cursor:pointer;text-align:start"><span style="width:18px;height:18px;border-radius:99px;border:2px solid var(--pr,#1F4F5C);box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex:none"><span style="width:8px;height:8px;border-radius:99px;background:{{ c.dot }}"></span></span>{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:14px;color:var(--mu,#5E6461)">اضغط على الكلمة المقصودة (اختياري)</span>
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:4px;font-family:'Amiri Quran',serif;font-size:19px;line-height:1.9">
+            <sc-for list="{{ reportWords }}" as="w" hint-placeholder-count="20"><button onClick="{{ w.on }}" style="border:0;border-radius:8px;padding:0 5px;background:{{ w.bg }};color:{{ w.fg }};font-family:'Amiri Quran',serif;font-size:19px;cursor:pointer">{{ w.t }}</button></sc-for>
+          </div>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--mu,#5E6461)">ملاحظة (اختياري)
+          <textarea value="{{ reportNote }}" onChange="{{ onNote }}" rows="3" placeholder="مثلًا: قرأت المدّ ست حركات" style="border-radius:14px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);padding:10px 12px;font-family:'Noto Naskh Arabic',serif;font-size:15px;resize:none"></textarea>
+        </label>
+        <div style="background:var(--sf2,#EFE8DA);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;line-height:1.75">
+          <div style="font-weight:700;font-size:15.5px">قبل الإرسال</div>
+          <div><b>ما الذي يُرسَل:</b> تسجيل هذه المحاولة، والنتيجة المعروضة، وإعدادات القراءة.</div>
+          <div><b>لماذا:</b> ليستمع إليه فريق مُجَوِّد ويحسّن التطبيق.</div>
+          <div><b>إلى متى:</b> يُحذف بعد مراجعته.</div>
+          <label style="display:flex;align-items:flex-start;gap:10px;background:var(--sf,#FFFDF8);border-radius:12px;padding:12px;cursor:pointer;margin-top:2px"><input type="checkbox" checked="{{ reportConsent }}" onChange="{{ onConsent }}" style="width:22px;height:22px;margin:2px 0 0;flex:none;accent-color:var(--pr,#1F4F5C)"><span>أوافق على إرسال هذا التسجيل والنتيجة لهذا الغرض.</span></label>
+        </div>
+      </div>
+      <div style="padding:12px 16px 34px;border-top:1px solid var(--ln,#E3D9C5)">
+        <button onClick="{{ sendReport }}" disabled="{{ reportDisabled }}" style="width:100%;height:56px;border:0;border-radius:16px;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:18px;font-weight:700;cursor:pointer;opacity:{{ reportOp }}">إرسال البلاغ</button>
+      </div>
+    </sc-if>
+
+    <!-- REPORT DONE -->
+    <sc-if value="{{ is.reportDone }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;padding:150px 28px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+        <div style="width:72px;height:72px;border-radius:99px;background:var(--okbg);display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="var(--ok)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"></path></svg></div>
+        <div style="font-size:21px;font-weight:700">وصلنا بلاغك، جزاك الله خيرًا</div>
+        <div style="font-size:15.5px;line-height:1.8;color:var(--mu,#5E6461);text-wrap:pretty">سيستمع إليه أحد أعضاء الفريق، ثم يُحذف التسجيل بعد مراجعته.</div>
+      </div>
+      <div style="padding:12px 16px 34px">
+        <button onClick="{{ nav.result }}" style="width:100%;height:56px;border:0;border-radius:16px;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:18px;font-weight:700;cursor:pointer">العودة إلى النتيجة</button>
+      </div>
+    </sc-if>
+
+    <!-- RECORDINGS -->
+    <sc-if value="{{ is.recordings }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 8px;display:flex;align-items:center;gap:10px">
+        
+        <span style="flex:1;font-size:19px;font-weight:700">تسجيلاتي</span>
+        <sc-if value="{{ hasRuns }}" hint-placeholder-val="{{ true }}"><button onClick="{{ askDeleteAll }}" style="height:40px;padding:0 12px;border-radius:12px;border:0;background:transparent;color:var(--mis,#B04A22);font-size:14px;cursor:pointer">حذف الكل</button></sc-if>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:4px 16px 16px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;line-height:1.6;color:var(--mu,#5E6461)">محفوظة على هذا الهاتف فقط. التلاوات على الآيات نفسها تُجمع في جلسة تدريب واحدة.</div>
+        <sc-for list="{{ runs }}" as="r" hint-placeholder-count="3">
+          <div role="button" onClick="{{ r.on }}" style="text-align:start;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;cursor:pointer">
+            <div style="display:flex;justify-content:space-between;width:100%;gap:8px"><span style="font-size:16.5px;font-weight:700;white-space:nowrap">{{ r.title }}</span><span style="font-size:13px;color:var(--mu,#5E6461)">{{ r.date }}</span></div>
+            <div style="font-size:14px;color:var(--mu,#5E6461)">{{ r.count }} · آخرها: {{ r.last }}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:13.5px"><sc-for list="{{ r.prog }}" as="p"><span style="padding:2px 8px;border-radius:99px;background:var(--sf2,#EFE8DA)">{{ p.t }}</span><sc-if value="{{ p.arrow }}"><span style="color:var(--mu,#5E6461)">←</span></sc-if></sc-for></div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noRuns }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:60px 20px;text-align:center;font-size:15.5px;line-height:1.8;color:var(--mu,#5E6461)">لا توجد تسجيلات محفوظة. ستظهر هنا تلاواتك بعد أول تسجيل.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- RUN DETAIL -->
+    <sc-if value="{{ is.run }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 8px;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ nav.recordings }}" aria-label="رجوع" style="width:40px;height:40px;border-radius:12px;border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);color:var(--ink,#1C2A30);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2 L10 7 L5 12"></path></svg></button>
+        <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">{{ runSel.title }}</span><span style="font-size:12.5px;color:var(--mu,#5E6461)">{{ runSel.count }}</span></div>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:4px 16px 20px;display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ runSel.attempts }}" as="a" hint-placeholder-count="3">
+          <div style="border:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px">
+            <button onClick="{{ a.onPlay }}" aria-label="تشغيل" style="width:40px;height:40px;border-radius:99px;border:1px solid var(--pr,#1F4F5C);background:transparent;color:var(--pr,#1F4F5C);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 1 L11 6 L3 11 Z" fill="currentColor"></path></svg></button>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600;display:flex;gap:6px"><span>{{ a.label }}</span><span style="color:var(--mu,#5E6461);font-weight:400">·</span><span dir="ltr" style="unicode-bidi:isolate;font-weight:400">{{ a.dur }}</span></span><span style="font-size:13px;color:var(--mu,#5E6461)">{{ a.summary }}</span></div>
+            <button onClick="{{ a.onOpen }}" style="height:36px;padding:0 10px;border-radius:10px;border:1px solid var(--ln,#E3D9C5);background:transparent;color:var(--ink,#1C2A30);font-size:13px;cursor:pointer">النتيجة</button>
+            <button onClick="{{ a.onDelete }}" aria-label="حذف" style="width:36px;height:36px;border-radius:10px;border:0;background:transparent;color:var(--mis,#B04A22);font-size:13px;cursor:pointer">حذف</button>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:12px 16px 34px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ln,#E3D9C5)">
+        <button onClick="{{ continueRun }}" style="width:100%;height:54px;border:0;border-radius:16px;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:17px;font-weight:700;cursor:pointer">واصل التدريب على هذه الآيات</button>
+        <button onClick="{{ deleteRun }}" style="width:100%;height:44px;border:0;background:transparent;color:var(--mis,#B04A22);font-size:15px;cursor:pointer">حذف هذه الجلسة</button>
+      </div>
+    </sc-if>
+
+    <!-- SETTINGS -->
+    <sc-if value="{{ is.settings }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:58px 16px 8px;display:flex;align-items:center;gap:10px">
+        
+        <span style="font-size:19px;font-weight:700">الإعدادات</span>
+      </div>
+      <div style="flex:1;overflow:auto;scrollbar-width:none;padding:4px 16px 16px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:var(--mu,#5E6461);padding:0 4px">القراءة</span>
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:16px;overflow:hidden;flex:none">
+            <div style="display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--ln,#E3D9C5)"><span style="flex:1;font-size:15.5px">حفص عن عاصم من طريق الشاطبية</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--pr,#1F4F5C)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"></path></svg></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:14px;color:var(--mu,#5E6461)"><span style="flex:1;font-size:15px">قراءات أخرى</span><span style="font-size:12.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--ln,#E3D9C5)">قريبًا</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:var(--mu,#5E6461);padding:0 4px">القارئ الافتراضي</span>
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:16px;overflow:hidden;flex:none">
+            <sc-for list="{{ recitersDefault }}" as="r" hint-placeholder-count="4">
+              <button onClick="{{ r.on }}" style="width:100%;display:flex;align-items:center;gap:10px;padding:14px;border:0;border-bottom:1px solid var(--ln,#E3D9C5);background:transparent;color:var(--ink,#1C2A30);font-size:15.5px;cursor:pointer;text-align:start"><span style="flex:1">{{ r.name }}</span><span style="color:var(--pr,#1F4F5C)">{{ r.mark }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:var(--mu,#5E6461);padding:0 4px">المظهر</span>
+          <div style="display:flex;background:var(--sf2,#EFE8DA);border-radius:14px;padding:4px;gap:4px">
+            <sc-for list="{{ themeOpts }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.on }}" style="flex:1;height:40px;border:0;border-radius:11px;cursor:pointer;font-size:15px;background:{{ t.bg }};color:var(--ink,#1C2A30)">{{ t.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:var(--mu,#5E6461);padding:0 4px">لغة الواجهة</span>
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:16px;overflow:hidden;flex:none">
+            <div style="display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--ln,#E3D9C5)"><span style="flex:1;font-size:15.5px">العربية</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--pr,#1F4F5C)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"></path></svg></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:14px;color:var(--mu,#5E6461)"><span style="flex:1;font-size:15px;font-family:Jost,sans-serif" dir="ltr">English</span><span style="font-size:12.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--ln,#E3D9C5)">قريبًا</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:var(--mu,#5E6461);padding:0 4px">الخصوصية</span>
+          <div style="background:var(--sf,#FFFDF8);border:1px solid var(--ln,#E3D9C5);border-radius:16px;padding:14px;font-size:14.5px;line-height:1.85;display:flex;flex-direction:column;gap:6px">
+            <span>لا حساب ولا تسجيل دخول.</span>
+            <span>تسجيلاتك ونتائجها محفوظة على هذا الهاتف، ويمكنك حذفها من «تسجيلاتي».</span>
+            <span>لا يُشارَك أي تسجيل إلا إذا أبلغت عن نتيجة ووافقت، ويُحذف بعد مراجعته.</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:center;padding:8px 0;text-align:center">
+          <dc-import name="MojawidMark" variant="m" ink="{{ markInk }}" accent="{{ markAcc }}" knock="{{ markKnock }}" style="width:40px;height:40px" hint-size="40px,40px"></dc-import>
+          <span style="font-size:13.5px;line-height:1.7;color:var(--mu,#5E6461)">مُجَوِّد للتدريب بين الدروس، ولا يغني عن المعلّم المجاز.<br>الإصدار ١٫٠ · مجاني ومفتوح المصدر</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ tabbed }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;border-top:1px solid var(--ln,#E3D9C5);background:var(--sf,#FFFDF8);padding:4px 8px 26px">
+        <button onClick="{{ tabs.practice.on }}" style="flex:1;border:0;background:transparent;color:{{ tabs.practice.c }};display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;font-size:12px;font-family:'Noto Naskh Arabic',serif"><dc-import name="MojawidMark" variant="x" ink="{{ tabs.practice.c }}" knock="var(--sf,#FFFDF8)" style="width:24px;height:24px" hint-size="24px,24px"></dc-import><span>تدرّب</span></button>
+        <button onClick="{{ tabs.recordings.on }}" style="flex:1;border:0;background:transparent;color:{{ tabs.recordings.c }};display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;font-size:12px;font-family:'Noto Naskh Arabic',serif"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg><span>تسجيلاتي</span></button>
+        <button onClick="{{ tabs.settings.on }}" style="flex:1;border:0;background:transparent;color:{{ tabs.settings.c }};display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;font-size:12px;font-family:'Noto Naskh Arabic',serif"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"></path><circle cx="15" cy="8" r="2.6" fill="var(--sf,#FFFDF8)"></circle><circle cx="9" cy="16" r="2.6" fill="var(--sf,#FFFDF8)"></circle></svg><span>الإعدادات</span></button>
+      </nav>
+    </sc-if>
+
+    <!-- OVERLAYS -->
+    <sc-if value="{{ alert }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:30">
+        <div style="width:270px;border-radius:14px;background:rgba(245,245,245,0.97);color:#000;text-align:center;overflow:hidden;font-family:-apple-system,'Noto Naskh Arabic',sans-serif">
+          <div style="padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:16px;font-weight:600;line-height:1.4">يطلب «مُجَوِّد» الوصول إلى الميكروفون</span>
+            <span style="font-size:13px;line-height:1.5">لتسجيل تلاوتك والاستماع إليها. يبقى التسجيل على هاتفك.</span>
+          </div>
+          <div style="display:flex;border-top:1px solid rgba(0,0,0,0.15)">
+            <button onClick="{{ denyMic }}" style="flex:1;height:44px;border:0;background:transparent;color:#0A7AFF;font-size:16px;cursor:pointer;border-left:1px solid rgba(0,0,0,0.15)">عدم السماح</button>
+            <button onClick="{{ allowMic }}" style="flex:1;height:44px;border:0;background:transparent;color:#0A7AFF;font-size:16px;font-weight:600;cursor:pointer">سماح</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:var(--ov,rgba(20,30,35,0.38));z-index:20"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--sf,#FFFDF8);border-radius:24px 24px 0 0;padding:10px 18px 34px;display:flex;flex-direction:column;gap:12px;box-shadow:0 -10px 30px rgba(0,0,0,0.12)">
+        <div style="width:40px;height:5px;border-radius:9px;background:var(--ln,#E3D9C5);align-self:center"></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:13px;padding:3px 10px;border-radius:99px;background:{{ sheet.tagBg }};color:{{ sheet.tagFg }}">{{ sheet.kind }}</span>
+          <span style="font-size:13px;color:var(--mu,#5E6461);white-space:nowrap">{{ sheet.place }}</span>
+        </div>
+        <div style="font-family:'Amiri Quran',serif;font-size:30px;line-height:2">{{ sheet.word }}</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px;line-height:1.65">
+          <span style="color:var(--mu,#5E6461)">المتوقَّع</span><span>{{ sheet.exp }}</span>
+          <span style="color:var(--mu,#5E6461)">سمعنا</span><span>{{ sheet.got }}</span>
+          <span style="color:var(--mu,#5E6461)">القاعدة</span><span>{{ sheet.rule }}</span>
+          <sc-if value="{{ sheet.hasMadd }}"><span style="color:var(--mu,#5E6461)">الحركات</span><span>{{ sheet.madd }}</span></sc-if>
+        </div>
+        <sc-if value="{{ sheet.isUnc }}"><div style="font-size:13.5px;line-height:1.7;background:var(--uncbg);border-radius:12px;padding:10px 12px">كاد النموذج يسمع القراءة الصحيحة هنا، فقد تكون تلاوتك صحيحة. لا يُحسب هذا الموضع خطأً.</div></sc-if>
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ sheetPlayReciter }}" style="flex:1;height:46px;border-radius:14px;border:0;background:var(--pr,#1F4F5C);color:var(--onpr,#F6F1E7);font-size:15px;cursor:pointer">استمع للكلمة من القارئ</button>
+          <button onClick="{{ toggleMyPlay }}" style="flex:1;height:46px;border-radius:14px;border:1px solid var(--ln,#E3D9C5);background:transparent;color:var(--ink,#1C2A30);font-size:15px;cursor:pointer">استمع لتسجيلي</button>
+        </div>
+        <button onClick="{{ sheetReport }}" style="height:36px;border:0;background:transparent;color:var(--mu,#5E6461);font-size:14px;text-decoration:underline;text-underline-offset:4px;cursor:pointer">لم أخطئ هنا؟ أبلغنا</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ confirmAll }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:30">
+        <div style="width:280px;border-radius:16px;background:var(--sf,#FFFDF8);text-align:center;overflow:hidden;flex:none">
+          <div style="padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:16.5px;font-weight:700">حذف كل التسجيلات؟</span>
+            <span style="font-size:13.5px;line-height:1.6;color:var(--mu,#5E6461)">ستُحذف التسجيلات ونتائجها من هذا الهاتف، ولا يمكن استرجاعها.</span>
+          </div>
+          <div style="display:flex;border-top:1px solid var(--ln,#E3D9C5)">
+            <button onClick="{{ cancelDeleteAll }}" style="flex:1;height:46px;border:0;background:transparent;color:var(--ink,#1C2A30);font-size:15.5px;cursor:pointer;border-left:1px solid var(--ln,#E3D9C5)">إلغاء</button>
+            <button onClick="{{ doDeleteAll }}" style="flex:1;height:46px;border:0;background:transparent;color:var(--mis,#B04A22);font-size:15.5px;font-weight:700;cursor:pointer">حذف</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:16px;right:16px;bottom:110px;z-index:40;background:var(--ink,#1C2A30);color:var(--bg,#F6F1E7);border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.6;text-align:center">{{ toast }}</div>
+    </sc-if>
+  </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;scenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;improving&quot;,&quot;clean&quot;,&quot;harder&quot;],&quot;default&quot;:&quot;improving&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;uploadFails&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const TIME = s => AR(Math.floor(s / 60)) + ':' + AR(String(s % 60).padStart(2, '0'));
+const TJ_SRC = {
+  7: 'يُوفُونَ بِ[h:1[ٱ][l[ل][g[نّ]َذْرِ وَيَخَافُونَ يَوْ[f:1[مًا ك]َانَ شَ[r[رُّ]هُ[n[ۥ] مُسْتَطِي[r[رًا]',
+  8: 'وَيُ[q:1[طْ]عِمُونَ [h:1[ٱ][l[ل]طَّعَامَ عَلَىٰ حُبِّه[n[ِۦ] مِسْكِي[a:1[نًا و]َيَتِي[a:1[مًا و]َأَسِي[r[رًا]',
+  9: 'إِ[g[نّ]َمَا نُ[q:1[طْ]عِمُكُمْ لِوَ[q:1[جْ]هِ [h:1[ٱ]للَّهِ لَا نُرِيدُ مِ[f:1[نك]ُمْ جَز[o[َا]ٓ[a:1[ءً و]َلَا شُكُو[r[رًا]',
+  10: 'إِ[g[نّ]َا نَخَافُ م[u:1[ِن ر]َّبِّنَا يَوْمًا عَبُو[f:1[سًا ق]َمْطَرِي[r[رًا]'
+};
+const CMAP = { h: 'idg', l: 'idg', s: 'idg', a: 'idg', u: 'idg', w: 'idg', d: 'idg', b: 'idg', g: 'ikh', f: 'ikh', c: 'ikh', i: 'ikh', q: 'qal', p: 'jaiz', o: 'wajib', m: 'lazim', r: 'raa' };
+const parse = src => { const out = []; const re = /\[([a-z])(?::\d+)?\[([^\]]+)\]/g; let last = 0, m; while ((m = re.exec(src))) { if (m.index > last) out.push({ t: src.slice(last, m.index), c: null }); out.push({ t: m[2], c: CMAP[m[1]] || null }); last = re.lastIndex; } if (last < src.length) out.push({ t: src.slice(last), c: null }); return out; };
+const SEGS = {}, WORDS = {};
+const WSEGS = {};
+for (const n of [7, 8, 9, 10]) { SEGS[n] = parse(TJ_SRC[n]); WORDS[n] = SEGS[n].map(s => s.t).join('').split(' '); const ws = [[]]; SEGS[n].forEach(g => g.t.split(' ').forEach((part, i) => { if (i > 0) ws.push([]); if (part) ws[ws.length - 1].push({ t: part, c: g.c }); })); WSEGS[n] = ws; }
+const LEGEND = [['lazim', 'مدّ لازم ٦ حركات'], ['wajib', 'مدّ واجب متصل'], ['jaiz', 'مدّ جائز (منفصل، عارض، لين)'], ['ikh', 'إخفاء ومواضع الغنّة'], ['qal', 'قلقلة'], ['raa', 'تفخيم الراء'], ['idg', 'إدغام وما لا يُلفظ']];
+const TH = {
+  light: { bg: '#F6F1E7', sf: '#FFFDF8', sf2: '#EFE8DA', ink: '#1C2A30', mu: '#5E6461', ln: '#E3D9C5', pr: '#1F4F5C', onpr: '#F6F1E7', gd: '#9A7428', mis: '#B04A22', misbg: 'rgba(176,74,34,0.13)', unc: '#5A6E7B', uncbg: 'rgba(90,110,123,0.13)', ok: '#2F6E4F', okbg: 'rgba(47,110,79,0.12)', ov: 'rgba(20,30,35,0.38)',
+    tj: { lazim: '#A3122A', wajib: '#D33B2C', jaiz: '#D7791B', ikh: '#1F8A4C', qal: '#2B7BBF', raa: '#22408F', idg: '#9C9C96' } },
+  dark: { bg: '#142A33', sf: '#1A3540', sf2: '#21404B', ink: '#F6F1E7', mu: '#A9B4B3', ln: '#2E4E59', pr: '#F6F1E7', onpr: '#142A33', gd: '#D8B566', mis: '#F2946A', misbg: 'rgba(242,148,106,0.17)', unc: '#A6BAC6', uncbg: 'rgba(166,186,198,0.15)', ok: '#86C9A2', okbg: 'rgba(134,201,162,0.15)', ov: 'rgba(0,0,0,0.55)',
+    tj: { lazim: '#FF7088', wajib: '#FF8A72', jaiz: '#F4AA5E', ikh: '#66CF90', qal: '#73B6F2', raa: '#97A9FF', idg: '#86959A' } }
+};
+const RECITERS = [
+  { name: 'محمود خليل الحصري', dir: 'Husary_64kbps' },
+  { name: 'مشاري راشد العفاسي', dir: 'Alafasy_64kbps' },
+  { name: 'محمد صدّيق المنشاوي', dir: 'Minshawy_Murattal_128kbps' },
+  { name: 'عبد الباسط عبد الصمد', dir: 'Abdul_Basit_Murattal_64kbps' }
+];
+const KIND = { letter: 'حرف مختلف', haraka: 'حركة مختلفة', tajweed: 'حكم تجويد', unc: 'غير مؤكَّد' };
+const MD = {
+  L: { ay: 10, w: 6, kind: 'letter', exp: 'قاف «قَـ»', got: 'كاف «كَـ»', rule: 'مخرج القاف من أقصى اللسان مع ما فوقه من الحنك، وهي حرف مستعلٍ مقلقل', change: 'ق ← ك', pexp: 'قَمطَرِۦۦرَا', pgot: 'كَمطَرِۦۦرَا', madd: '—' },
+  H: { ay: 9, w: 1, kind: 'haraka', exp: 'ضمّة على النون «نُـ»', got: 'فتحة «نَـ»', rule: 'الفعل «أطعم» رباعي، فمضارعه بضمّ حرف المضارعة', change: 'ـُ ← ـَ', pexp: 'نُطعِمُكُم', pgot: 'نَطعِمُكُم', madd: '—' },
+  T: { ay: 9, w: 7, kind: 'tajweed', exp: 'مدّ ٤ أو ٥ حركات', got: 'نحو حركتين', rule: 'مدّ واجب متصل: حرف مدّ بعده همزة في كلمة واحدة', change: 'قِصَر المدّ', pexp: 'جَزَاااااءَں', pgot: 'جَزَااءَں', madd: 'المتوقَّع ٤–٥ · المسموع ٢' },
+  u1: { ay: 7, w: 6, kind: 'unc', exp: 'طاء مفخّمة', got: 'طاء أقرب إلى التاء', rule: 'الطاء حرف مستعلٍ مطبق، يُفخَّم دائمًا', change: 'تفخيم الطاء', pexp: 'مُستَطِۦۦرَا', pgot: 'مُستَطِۦۦرَا', madd: '—' },
+  u2: { ay: 8, w: 4, kind: 'unc', exp: 'إدغام التنوين في الواو بغنّة', got: 'غنّة قصيرة', rule: 'إدغام بغنّة: تنوين بعده واو', change: 'مدّة الغنّة', pexp: 'مِسكِۦۦنَوْ', pgot: 'مِسكِۦۦنَوْ', madd: 'غنّة: المتوقَّع ٢ · المسموع ١ تقريبًا' },
+  s1: { ay: 8, w: 3, kind: 'waqf' },
+  s2: { ay: 10, w: 3, kind: 'repeat' }
+};
+const PH = {
+  7: ['يُۥۥفُۥۥنَ', 'بِننَذرِ', 'وَيَخَاافُۥۥنَ', 'يَومَںْ', 'كَاانَ', 'شَررُهُۥ', 'مُستَطِۦۦرَا'],
+  8: ['وَيُطعِمُۥۥنَ', 'ططَعَاامَ', 'عَلَاا', 'حُببِهِۦ', 'مِسكِۦۦنَوْ', 'وَيَتِۦۦمَوْ', 'وَأَسِۦۦرَا'],
+  9: ['إِننَمَا', 'نُطعِمُكُم', 'لِوَجهِ', 'للَااهِ', 'لَاا', 'نُرِۦۦدُ', 'مِںكُم', 'جَزَاااااءَں', 'وَلَاا', 'شُكُۥۥرَا'],
+  10: ['إِننَاا', 'نَخَاافُ', 'مِرْ', 'رَببِنَاا', 'يَومَں', 'عَبُۥۥسَں', 'قَمطَرِۦۦرَا']
+};
+const SIF_COLS = ['الجهر / الهمس', 'الشدّة / الرخاوة', 'الاستعلاء / الاستفال', 'الإطباق / الانفتاح', 'القلقلة', 'التفخيم'];
+const SIF = [
+  { l: 'ق', e: ['جهر', 'شدّة', 'استعلاء', 'انفتاح', 'قلقلة', 'مفخّم'], g: ['همس', 'شدّة', 'استفال', 'انفتاح', 'لا', 'مرقّق'] },
+  { l: 'م', e: ['جهر', 'بينيّة', 'استفال', 'انفتاح', 'لا', 'مرقّق'] },
+  { l: 'ط', e: ['جهر', 'شدّة', 'استعلاء', 'إطباق', 'قلقلة', 'مفخّم'] },
+  { l: 'ر', e: ['جهر', 'بينيّة', 'استفال', 'انفتاح', 'لا', 'مرقّق'] },
+  { l: 'ي', e: ['جهر', 'رخاوة', 'استفال', 'انفتاح', 'لا', 'مرقّق'] },
+  { l: 'ر', e: ['جهر', 'بينيّة', 'استفال', 'انفتاح', 'لا', 'مفخّم'] }
+];
+const SCEN = {
+  improving: [['L', 'H', 'T', 'u1', 'u2', 's1', 's2'], ['L', 'u1'], []],
+  clean: [['u2'], []],
+  harder: [['H', 'u1'], ['H', 'T', 'L', 'u2', 's1'], ['T']]
+};
+const SAMPLE_RUNS = [
+  { id: 's1', title: 'الفاتحة ١–٧', date: '١٢ أكتوبر', counts: [1, 0], durs: [38, 36] },
+  { id: 's2', title: 'الملك ١–٤', date: '٢ أكتوبر', counts: [2], durs: [51] }
+];
+const isReal = k => ['letter', 'haraka', 'tajweed'].includes(MD[k].kind);
+const countAr = (n, unc) => {
+  if (unc) return n === 1 ? 'وموضع غير مؤكَّد' : n === 2 ? 'وموضعان غير مؤكَّدين' : `و${AR(n)} مواضع غير مؤكَّدة`;
+  return n === 1 ? 'موضع واحد للمراجعة' : n === 2 ? 'موضعان للمراجعة' : n <= 10 ? `${AR(n)} مواضع للمراجعة` : `${AR(n)} موضعًا للمراجعة`;
+};
+const placesAr = n => n === 0 ? 'لا مواضع' : n === 1 ? 'موضع واحد' : n === 2 ? 'موضعان' : `${AR(n)} مواضع`;
+
+class Component extends DCLogic {
+  state = { playWord: null, screen: 'home', mode: 'choose', from: 7, to: 10, istiadha: false, basmala: false, reciter: 0, defReciter: 0, reciterOpen: false, playing: null, playAyah: null, mic: 'unknown', alert: false, rec: false, sec: 0, attempts: [], view: 'mis', viewIdx: 0, sheet: null, adv: false, advTab: 'ph', wait: { phase: 'upload', pct: 0, failed: false, retryIn: 0 }, failedOnce: false, rep: { cat: null, word: null, note: '', consent: false }, runSel: null, confirmAll: false, toast: null, themePref: null, myPlay: false, myT: 0, archived: [], deletedSamples: [], focusAyah: null };
+
+  componentWillUnmount() { this.clearAll(); }
+  clearAll() { clearInterval(this.recT); clearInterval(this.waitT); clearTimeout(this.waitTo); clearInterval(this.myT); clearInterval(this.retryT); clearTimeout(this.toastT); this.stopAudio(); }
+  showToast(t) { clearTimeout(this.toastT); this.setState({ toast: t }); this.toastT = setTimeout(() => this.setState({ toast: null }), 2400); }
+  range() { const s = this.state; if (s.focusAyah) return [s.focusAyah, s.focusAyah]; return s.mode === 'auto' ? [7, 10] : [s.from, s.to]; }
+  go(screen) { this.stopMy(); this.setState({ screen, sheet: null, reciterOpen: false, alert: false }); }
+
+  stopAudio() { if (this.audio) { this.audio.pause(); this.audio.onended = null; this.audio = null; } }
+  playSeq(list, tag) {
+    this.stopAudio();
+    const dir = RECITERS[this.state.reciter].dir;
+    const next = i => {
+      if (i >= list.length) { this.setState({ playing: null, playAyah: null }); return; }
+      const n = list[i];
+      const a = new Audio(`https://everyayah.com/data/${dir}/076${String(n).padStart(3, '0')}.mp3`);
+      this.audio = a; a.onended = () => next(i + 1);
+      a.onerror = () => { this.setState({ playing: null, playAyah: null }); this.showToast('تعذّر تشغيل صوت القارئ في المعاينة'); };
+      a.play().catch(() => {});
+      this.setState({ playing: tag, playAyah: n, playWord: null });
+    };
+    next(0);
+  }
+  playWord(n, wi) {
+    this.stopAudio();
+    const id = n + ':' + wi;
+    const a = new Audio(`https://audio.qurancdn.com/wbw/076_${String(n).padStart(3, '0')}_${String(wi + 1).padStart(3, '0')}.mp3`);
+    this.audio = a; a.onended = () => this.setState({ playing: null, playWord: null });
+    a.onerror = () => { this.setState({ playing: null, playWord: null }); this.showToast('تعذّر تشغيل صوت الكلمة في المعاينة'); };
+    a.play().catch(() => {});
+    this.setState({ playing: 'word', playWord: id, playAyah: null });
+  }
+  playAll() { if (this.state.playing === 'all') { this.stopAudio(); this.setState({ playing: null, playAyah: null }); return; } const [f, t] = this.range(); const l = []; for (let i = f; i <= t; i++) l.push(i); this.playSeq(l, 'all'); }
+  playOne(n) { if (this.state.playing === n) { this.stopAudio(); this.setState({ playing: null, playAyah: null }); return; } this.playSeq([n], n); }
+
+  startRecord() { this.stopAudio(); const s = this.state; const base = { sec: 0, rec: false, playing: null, playAyah: null, sheet: null }; if (s.mic === 'granted') this.setState({ ...base, screen: 'record' }); else if (s.mic === 'denied') this.setState({ ...base, screen: 'denied' }); else this.setState({ ...base, screen: 'record', alert: true }); }
+  toggleRec() {
+    if (this.state.rec) return this.stopRec();
+    this.stopAudio();
+    this.setState({ rec: true, sec: 0, playing: null, playAyah: null });
+    this.recT = setInterval(() => { const s = this.state.sec + 1; if (s >= 60) { this.setState({ sec: 60 }); this.stopRec(); } else this.setState({ sec: s }); }, 1000);
+  }
+  stopRec() { clearInterval(this.recT); const sec = Math.max(this.state.sec, 3); this.setState({ rec: false, sec }); this.startWait(sec); }
+  startWait(sec) {
+    this.pendingSec = sec;
+    this.setState({ screen: 'waiting', wait: { phase: 'upload', pct: 0, failed: false, retryIn: 0 } });
+    clearInterval(this.waitT);
+    this.waitT = setInterval(() => {
+      const w = this.state.wait; if (w.failed) return;
+      if (w.phase === 'upload') {
+        const pct = Math.min(100, w.pct + 9);
+        if (this.props.uploadFails && !this.state.failedOnce && pct >= 54) { this.fail(); return; }
+        this.setState({ wait: { ...w, pct } });
+        if (pct >= 100) this.setState({ wait: { ...w, pct: 100, phase: 'analyse' } });
+      } else if (w.phase === 'analyse') {
+        const pct = w.apct === undefined ? 0 : w.apct + 7;
+        if (pct >= 100) { clearInterval(this.waitT); this.finishAttempt(); return; }
+        this.setState({ wait: { ...w, apct: pct } });
+      }
+    }, 120);
+  }
+  fail() { this.setState({ failedOnce: true, wait: { ...this.state.wait, failed: true, retryIn: 5 } }); clearInterval(this.retryT); this.retryT = setInterval(() => { const r = this.state.wait.retryIn - 1; if (r <= 0) this.retryNow(); else this.setState({ wait: { ...this.state.wait, retryIn: r } }); }, 1000); }
+  retryNow() { clearInterval(this.retryT); this.setState({ wait: { ...this.state.wait, failed: false } }); }
+  cancelWait() { clearInterval(this.waitT); clearInterval(this.retryT); this.setState({ screen: 'record', sec: 0 }); }
+  finishAttempt() {
+    const s = this.state; const sc = SCEN[this.props.scenario ?? 'improving'] || SCEN.improving;
+    const k = Math.min(s.attempts.length, sc.length - 1);
+    const [f, t] = this.range();
+    const keys = sc[k].filter(x => MD[x].ay >= f && MD[x].ay <= t);
+    const attempts = [...s.attempts, { keys, sec: this.pendingSec || 40, range: [f, t] }];
+    this.setState({ attempts, viewIdx: attempts.length - 1, screen: 'result', view: 'mis', adv: false, sheet: null });
+  }
+  tryAgain() { this.stopMy(); this.setState({ focusAyah: null }, () => this.startRecord()); }
+  practiseAyah(n) { this.stopMy(); this.archiveRun(); this.setState({ focusAyah: n, attempts: [] }, () => this.startRecord()); }
+  archiveRun() { const s = this.state; if (!s.attempts.length) return; const [f, t] = s.attempts[0].range; this.setState({ archived: [{ id: 'a' + Date.now(), title: `الإنسان ${AR(f)}–${AR(t)}`, date: 'اليوم', counts: s.attempts.map(a => a.keys.filter(isReal).length), durs: s.attempts.map(a => a.sec) }, ...s.archived] }); }
+  newRecitation() { this.stopMy(); this.stopAudio(); this.archiveRun(); this.setState({ attempts: [], focusAyah: null, screen: 'home', playing: null, playAyah: null }); }
+
+  toggleMy() {
+    if (this.state.myPlay) return this.stopMy();
+    const a = this.state.attempts[this.state.viewIdx]; const dur = a ? a.sec : 40;
+    this.setState({ myPlay: true, myT: 0 });
+    this.myT = setInterval(() => { const t = this.state.myT + 0.25; if (t >= dur) this.stopMy(); else this.setState({ myT: t }); }, 250);
+  }
+  stopMy() { clearInterval(this.myT); if (this.state.myPlay) this.setState({ myPlay: false, myT: 0 }); }
+
+  runsList() {
+    const s = this.state; const out = [];
+    if (s.attempts.length) { const [f, t] = s.attempts[0].range; out.push({ id: 'cur', title: `الإنسان ${AR(f)}–${AR(t)}`, date: 'اليوم', counts: s.attempts.map(a => a.keys.filter(isReal).length), durs: s.attempts.map(a => a.sec) }); }
+    return [...out, ...s.archived, ...SAMPLE_RUNS.filter(r => !s.deletedSamples.includes(r.id))];
+  }
+
+  renderVals() {
+    const s = this.state, p = this.props;
+    const dark = s.themePref ? s.themePref === 'dark' : !!p.dark;
+    const th = dark ? TH.dark : TH.light;
+    const [f, t] = this.range();
+    const is = { home: s.screen === 'home', record: s.screen === 'record', denied: s.screen === 'denied', waiting: s.screen === 'waiting', result: s.screen === 'result', report: s.screen === 'report', reportDone: s.screen === 'reportDone', recordings: s.screen === 'recordings', run: s.screen === 'run', settings: s.screen === 'settings', choose: s.mode === 'choose', auto: s.mode === 'auto' };
+    const nums = []; for (let i = f; i <= t; i++) nums.push(i);
+    const ayat = nums.map(n => ({ n, mark: '\u06DD' + AR(n), playBg: s.playAyah === n ? th.uncbg : 'transparent', onPlay: () => this.playOne(n), segs: SEGS[n].map(g => ({ t: g.t, color: g.c ? th.tj[g.c] : 'inherit' })), words: WSEGS[n].map((ws, wi) => ({ bg: s.playWord === n + ':' + wi || s.playAyah === n ? th.uncbg : 'transparent', onTap: () => this.playWord(n, wi), segs: ws.map(g => ({ t: g.t, color: g.c ? th.tj[g.c] : 'inherit' })) })) }));
+    const present = new Set(); nums.forEach(n => SEGS[n].forEach(g => g.c && present.add(g.c)));
+    const tjLegend = LEGEND.map(([c, label]) => ({ label, color: th.tj[c], op: present.has(c) ? 1 : 0.45 }));
+
+    // result
+    const att = s.attempts[s.viewIdx];
+    const cur = att ? att.keys : [];
+    const prev = s.viewIdx > 0 ? s.attempts[s.viewIdx - 1].keys : null;
+    const curReal = cur.filter(isReal), curUnc = cur.filter(k => MD[k].kind === 'unc');
+    let num = 0; const badgeOf = {}; nums.forEach(n => WORDS[n].forEach((_, wi) => { const k = cur.find(x => MD[x].ay === n && MD[x].w === wi && isReal(x)); if (k) badgeOf[k] = AR(++num); }));
+    const fixedKeys = prev ? prev.filter(isReal).filter(k => !curReal.includes(k)) : [];
+    const resAyat = nums.map(n => ({ n, mark: '\u06DD' + AR(n), words: WORDS[n].map((w, wi) => {
+      const k = cur.find(x => MD[x].ay === n && MD[x].w === wi && ['letter', 'haraka', 'tajweed', 'unc'].includes(MD[x].kind));
+      const stop = cur.find(x => MD[x].ay === n && MD[x].w === wi && (MD[x].kind === 'waqf' || MD[x].kind === 'repeat'));
+      const fx = fixedKeys.find(x => MD[x].ay === n && MD[x].w === wi);
+      const kind = k ? MD[k].kind : null;
+      const o = { t: w, bg: 'transparent', line: 'none', dstyle: 'solid', dcolor: 'transparent', thick: '0', cursor: 'default', onTap: null, hasBadge: false, badge: '', badgeBg: 'transparent', badgeFg: th.ink, hasStop: !!stop, stopLabel: stop ? (MD[stop].kind === 'waqf' ? 'وقف' : '↩') : '' };
+      if (kind === 'letter') Object.assign(o, { bg: th.misbg, line: 'underline', dcolor: th.mis, thick: '3px' });
+      if (kind === 'haraka') Object.assign(o, { line: 'underline', dcolor: th.mis, thick: '3px' });
+      if (kind === 'tajweed') Object.assign(o, { line: 'underline', dstyle: 'wavy', dcolor: th.mis, thick: '1.5px' });
+      if (kind === 'unc') Object.assign(o, { line: 'underline', dstyle: 'dotted', dcolor: th.unc, thick: '3px' });
+      if (k) Object.assign(o, { cursor: 'pointer', onTap: () => this.setState({ sheet: k }), hasBadge: true, badge: kind === 'unc' ? '؟' : badgeOf[k], badgeBg: kind === 'unc' ? th.uncbg : th.mis, badgeFg: kind === 'unc' ? th.unc : th.sf });
+      else if (fx) Object.assign(o, { hasBadge: true, badge: '✓', badgeBg: th.okbg, badgeFg: th.ok });
+      return o;
+    }) }));
+    let summary = curReal.length === 0 ? 'لم نجد أخطاء' : countAr(curReal.length);
+    if (curUnc.length) summary += (curReal.length === 0 ? '، و' + countAr(curUnc.length, true).slice(1) : '، ' + countAr(curUnc.length, true));
+    let outcome = '';
+    if (att) {
+      if (!prev) outcome = curReal.length === 0 ? 'بارك الله فيك. ثبّت هذه الآيات بقراءتها مرة أخرى.' : 'اضغط على أي موضع لترى ما سمعناه.';
+      else { const a = prev.filter(isReal).length, b = curReal.length;
+        if (b === 0) outcome = a > 0 ? 'أحسنت، صحّحت كل المواضع هذه المرة.' : 'أحسنت، تلاوة ثابتة مرة أخرى.';
+        else if (b < a) outcome = fixedKeys.length === 1 ? 'أحسنت، صحّحت موضعًا. واصل على البقية.' : `أحسنت، صحّحت ${fixedKeys.length === 2 ? 'موضعين' : placesAr(fixedKeys.length)}. واصل على البقية.`;
+        else if (b === a) outcome = 'أنت على الطريق الصحيح، جرّب مرة أخرى.';
+        else outcome = 'واصل، ركّز على هذه المواضع.'; }
+    }
+    const remain = curReal.map(k => ({ word: WORDS[MD[k].ay][MD[k].w], kind: KIND[MD[k].kind], note: prev && prev.includes(k) ? 'ما زال يحتاج إلى مراجعة' : 'موضع جديد للمراجعة', on: () => this.setState({ sheet: k }) }));
+    const runChips = s.attempts.map((a, i) => { const c = a.keys.filter(isReal).length; return { label: 'المحاولة ' + AR(i + 1), count: placesAr(c), dots: Array.from({ length: c }, (_, j) => ({ j })), clear: c === 0, bg: i === s.viewIdx ? th.sf2 : 'transparent', border: i === s.viewIdx ? `1.5px solid ${th.pr}` : `1px solid ${th.ln}`, on: () => { this.stopMy(); this.setState({ viewIdx: i }); } }; });
+    const phon = nums.filter(n => cur.some(k => MD[k].ay === n && MD[k].pexp)).map(n => {
+      const marks = cur.filter(k => MD[k].ay === n && MD[k].pexp);
+      const tok = (useGot) => PH[n].map((x, wi) => { const k = marks.find(m => MD[m].w === wi); const real = k && isReal(k); return { t: k && useGot ? MD[k].pgot : x, bg: k ? (real ? th.misbg : th.uncbg) : 'transparent' }; });
+      return { n: AR(n), exp: tok(false), got: tok(true) };
+    });
+    const table = cur.filter(k => MD[k].exp).map(k => ({ place: `الإنسان ${AR(MD[k].ay)} · «${WORDS[MD[k].ay][MD[k].w]}»`, type: KIND[MD[k].kind], color: MD[k].kind === 'unc' ? th.unc : th.mis, change: MD[k].change, rule: MD[k].rule, exp: MD[k].exp, got: MD[k].got, madd: MD[k].madd }));
+    const hasL = cur.includes('L');
+    const sifat = SIF.map((r, i) => ({ letter: r.l, headBg: i === 0 && hasL ? th.misbg : th.sf, cells: r.e.map((e, j) => { const diff = i === 0 && hasL && r.g && r.g[j] !== e; return { t: diff ? `${e} ← ${r.g[j]}` : e, bg: diff ? th.misbg : 'transparent', fg: diff ? th.mis : th.ink }; }) }));
+    const focusAy = curReal.length && !s.focusAyah ? MD[curReal[0]].ay : null;
+    const res = { attemptLabel: att ? 'المحاولة ' + AR(s.viewIdx + 1) + (s.viewIdx < s.attempts.length - 1 ? ' · محاولة سابقة' : '') : '', summary, outcome, hasOutcome: !!outcome, ayat: resAyat, dur: att ? TIME(att.sec) : '', hasCompare: s.attempts.length > 1, fixed: fixedKeys.map(k => ({ word: WORDS[MD[k].ay][MD[k].w], kind: KIND[MD[k].kind] })), remain: prev ? remain : [], runChips, phon, noPhon: phon.length === 0, table, noTable: table.length === 0, hasSifat: hasL, noSifat: !hasL, hasFocusAyah: !!focusAy, focusLabel: focusAy ? 'تدرّب على\nالآية ' + AR(focusAy) : '' };
+
+    const sk = s.sheet && MD[s.sheet];
+    const sheet = sk ? { kind: KIND[sk.kind], place: `الإنسان ${AR(sk.ay)}`, word: WORDS[sk.ay][sk.w], exp: sk.exp, got: sk.got, rule: sk.rule, madd: sk.madd, hasMadd: sk.madd && sk.madd !== '—', isUnc: sk.kind === 'unc', tagBg: sk.kind === 'unc' ? th.uncbg : th.misbg, tagFg: sk.kind === 'unc' ? th.unc : th.mis } : {};
+
+    const w = s.wait; const uploading = w.phase === 'upload';
+    const runs = this.runsList().map(r => ({ title: r.title, date: r.date, count: r.counts.length === 1 ? 'محاولة واحدة' : r.counts.length === 2 ? 'محاولتان' : `${AR(r.counts.length)} محاولات`, last: r.counts[r.counts.length - 1] === 0 ? 'لم نجد أخطاء' : placesAr(r.counts[r.counts.length - 1]), prog: r.counts.map((c, i) => ({ t: AR(c), arrow: i < r.counts.length - 1 })), on: () => this.setState({ screen: 'run', runSel: r.id }) }));
+    const selR = this.runsList().find(r => r.id === s.runSel);
+    const runSel = selR ? { title: selR.title, count: selR.counts.length === 1 ? 'محاولة واحدة' : `${AR(selR.counts.length)} محاولات`, attempts: selR.counts.map((c, i) => ({ label: 'المحاولة ' + AR(i + 1), dur: TIME(selR.durs[i]), summary: c === 0 ? 'لم نجد أخطاء' : countAr(c), onPlay: () => this.showToast('يُشغَّل تسجيل المحاولة ' + AR(i + 1)), onOpen: () => { if (selR.id === 'cur') this.setState({ screen: 'result', viewIdx: i }); else this.showToast('في هذا النموذج: النتائج المفصّلة متاحة لجلسة اليوم فقط'); }, onDelete: () => { if (selR.id === 'cur') { const at = s.attempts.filter((_, j) => j !== i); this.setState({ attempts: at, viewIdx: Math.max(0, at.length - 1), screen: at.length ? 'run' : 'recordings' }); } else this.showToast('حُذفت المحاولة ' + AR(i + 1)); } })) } : { title: '', count: '', attempts: [] };
+
+    const repWords = []; nums.forEach(n => WORDS[n].forEach((wd, wi) => { const id = n + ':' + wi; const sel = s.rep.word === id; repWords.push({ t: wd, bg: sel ? th.pr : 'transparent', fg: sel ? th.onpr : th.ink, on: () => this.setState({ rep: { ...s.rep, word: sel ? null : id } }) }); }));
+    const cats = ['أشار إلى خطأ لم أقع فيه', 'لم يلاحظ خطأً وقعت فيه', 'تعرّف على آيات غير التي قرأتها', 'شيء آخر'];
+    const go = scr => () => this.go(scr);
+    const jumpTo = (scr, extra = {}) => () => { this.stopMy(); this.stopAudio(); let st = { screen: scr, sheet: null, alert: false, playing: null, playAyah: null, ...extra }; if ((scr === 'result' || scr === 'report') && !s.attempts.length) { const sc = SCEN[p.scenario ?? 'improving'] || SCEN.improving; st.attempts = [{ keys: sc[0], sec: 42, range: [7, 10] }]; st.viewIdx = 0; } this.setState(st); };
+    const jumps = [
+      ['1 · Choose ayat', jumpTo('home', { mode: 'choose' }), 'home'], ['1 · Auto-detect', jumpTo('home', { mode: 'auto' }), null],
+      ['2 · Mic permission', jumpTo('record', { alert: true, mic: 'unknown', rec: false, sec: 0 }), null], ['2 · Mic denied', jumpTo('denied', { mic: 'denied' }), 'denied'],
+      ['2 · Record', jumpTo('record', { mic: 'granted', rec: false, sec: 0 }), 'record'],
+      ['3 · Waiting', () => { jumpTo('record', { mic: 'granted' })(); this.startWait(42); }, 'waiting'],
+      ['4 · Result', jumpTo('result'), 'result'], ['6 · Report', jumpTo('report'), 'report'],
+      ['7 · My recordings', jumpTo('recordings'), 'recordings'], ['Settings', jumpTo('settings'), 'settings']
+    ].map(([label, on, scr]) => ({ label, on, bg: scr && scr === s.screen ? '#D6CDBB' : 'transparent' }));
+
+    return {
+      th, dark, is, ayat, tjLegend, jumps, res, sheet,
+      darkLabel: dark ? 'Switch to light' : 'Switch to dark',
+      toggleDark: () => this.setState({ themePref: dark ? 'light' : 'dark' }),
+      markInk: dark ? '#F6F1E7' : '#1F4F5C', markAcc: dark ? '#D8B566' : '#C49A3F', markKnock: dark ? '#142A33' : '#F6F1E7',
+      nav: { home: go('home'), recordings: go('recordings'), settings: go('settings'), result: go('result') },
+      setModeChoose: () => this.setState({ mode: 'choose', focusAyah: null }), setModeAuto: () => { this.stopAudio(); this.setState({ mode: 'auto', focusAyah: null, playing: null, playAyah: null }); },
+      modeChooseBg: is.choose ? th.sf : 'transparent', modeAutoBg: is.auto ? th.sf : 'transparent',
+      modeChooseSh: is.choose ? '0 1px 3px rgba(0,0,0,0.12)' : 'none', modeAutoSh: is.auto ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
+      surah: '76', onSurah: () => {},
+      from: String(s.from), to: String(s.to),
+      fromOpts: [7, 8, 9, 10].map(v => ({ v: String(v), l: AR(v), sel: v === s.from })), toOpts: [7, 8, 9, 10].filter(v => v >= s.from).map(v => ({ v: String(v), l: AR(v), sel: v === s.to })),
+      onFrom: e => { const v = +e.target.value; this.setState({ from: v, to: Math.max(v, s.to) }); }, onTo: e => { const v = +e.target.value; this.setState({ to: v, from: Math.min(s.from, v) }); },
+      istiadha: s.istiadha, basmala: s.basmala, onIstiadha: e => this.setState({ istiadha: e.target.checked }), onBasmala: e => this.setState({ basmala: e.target.checked }),
+      playingAll: s.playing === 'all', notPlayingAll: s.playing !== 'all', playAllToggle: () => this.playAll(),
+      reciterName: RECITERS[s.reciter].name, reciterOpen: s.reciterOpen, toggleReciterMenu: () => this.setState({ reciterOpen: !s.reciterOpen }),
+      reciters: RECITERS.map((r, i) => ({ name: r.name, mark: i === s.reciter ? '✓' : '', bg: i === s.reciter ? th.sf2 : 'transparent', on: () => { this.stopAudio(); this.setState({ reciter: i, reciterOpen: false, playing: null, playAyah: null }); } })),
+      recitersDefault: RECITERS.map((r, i) => ({ name: r.name, mark: i === s.defReciter ? '✓' : '', on: () => this.setState({ defReciter: i, reciter: i }) })),
+      reciterPos: s.playing === 'all' && s.playAyah ? 'الآية ' + AR(s.playAyah) : AR(t - f + 1) + (t - f + 1 > 2 ? ' آيات' : ' آية'),
+      startRecord: () => this.startRecord(),
+      rangeLabel: is.auto && !s.focusAyah ? 'تعرّف تلقائي' : `الإنسان ${AR(f)}` + (t > f ? `–${AR(t)}` : ''),
+      attemptLabelNext: 'المحاولة ' + AR(s.attempts.length + 1) + (s.attempts.length ? ' · الإعدادات نفسها' : ''),
+      backFromRecord: () => { clearInterval(this.recT); this.setState({ rec: false, sec: 0 }); this.go(s.attempts.length ? 'result' : 'home'); },
+      elapsed: TIME(s.sec), remaining: 'بقي ' + TIME(60 - s.sec), remainColor: 60 - s.sec <= 10 && s.rec ? th.gd : th.mu,
+      ringOffset: String(326.7 * (1 - s.sec / 60)), recording: s.rec, notRecording: !s.rec, recAria: s.rec ? 'إيقاف التسجيل' : 'بدء التسجيل',
+      recHint: s.rec ? 'اضغط للإيقاف وإرسال التلاوة' : 'اضغط للتسجيل · حتى دقيقة واحدة', textOp: s.rec ? '1' : '0.92',
+      toggleRec: () => this.toggleRec(),
+      onFile: e => { if (e.target.files && e.target.files[0]) this.startWait(45); },
+      alert: s.alert, allowMic: () => this.setState({ mic: 'granted', alert: false }), denyMic: () => this.setState({ mic: 'denied', alert: false, screen: 'denied' }),
+      openSettingsGrant: () => { this.showToast('في التطبيق تُفتح إعدادات الهاتف. هنا نفترض أنك سمحت.'); this.setState({ mic: 'granted', screen: 'record', sec: 0, rec: false }); },
+      waitOk: !w.failed, waitFailed: w.failed, waitTitle: uploading ? 'نرسل تسجيلك' : 'نستمع إلى تلاوتك',
+      waitPct: (uploading ? w.pct / 2 : 50 + (w.apct || 0) / 2) + '%',
+      step1Color: th.ink, step1Mark: uploading ? AR(w.pct) + '٪' : '✓', step2Color: uploading ? th.mu : th.ink, step2Mark: uploading ? '' : '…',
+      retryText: 'بعد ' + AR(w.retryIn) + ' ثوانٍ', retryNow: () => this.retryNow(), cancelWait: () => this.cancelWait(),
+      isMisView: s.view === 'mis', isTjView: s.view === 'tj', viewMis: () => this.setState({ view: 'mis' }), viewTj: () => this.setState({ view: 'tj' }),
+      misTabBg: s.view === 'mis' ? th.sf : 'transparent', tjTabBg: s.view === 'tj' ? th.sf : 'transparent', misTabSh: s.view === 'mis' ? '0 1px 3px rgba(0,0,0,0.12)' : 'none', tjTabSh: s.view === 'tj' ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
+      myPlaying: s.myPlay, myNotPlaying: !s.myPlay, toggleMyPlay: () => this.toggleMy(), myPct: (att ? (s.myT / att.sec) * 100 : 0) + '%',
+      adv: s.adv, toggleAdv: () => this.setState({ adv: !s.adv }), advArrow: s.adv ? 'إخفاء ▴' : 'للمتقدّمين ▾',
+      advTabs: [['ph', 'المقارنة الصوتية'], ['tbl', 'جدول المواضع'], ['sif', 'صفات الحروف']].map(([k, l]) => ({ label: l, bg: s.advTab === k ? th.pr : 'transparent', fg: s.advTab === k ? th.onpr : th.ink, on: () => this.setState({ advTab: k }) })),
+      advPh: s.advTab === 'ph', advTbl: s.advTab === 'tbl', advSif: s.advTab === 'sif', sifatCols: SIF_COLS, sifat,
+      tryAgain: () => this.tryAgain(), newRecitation: () => this.newRecitation(), practiseAyah: () => focusAy && this.practiseAyah(focusAy),
+      openReport: () => this.setState({ screen: 'report', rep: { cat: null, word: null, note: '', consent: false } }),
+      hasSheet: !!sk, closeSheet: () => this.setState({ sheet: null }), sheetPlayReciter: () => sk && this.playWord(sk.ay, sk.w),
+      sheetReport: () => { const id = sk.ay + ':' + sk.w; this.setState({ screen: 'report', sheet: null, rep: { cat: 0, word: id, note: '', consent: false } }); },
+      reportCats: cats.map((label, i) => ({ label, dot: s.rep.cat === i ? th.pr : 'transparent', border: s.rep.cat === i ? `1.5px solid ${th.pr}` : `1px solid ${th.ln}`, on: () => this.setState({ rep: { ...s.rep, cat: i } }) })),
+      reportWords: repWords, reportNote: s.rep.note, onNote: e => this.setState({ rep: { ...s.rep, note: e.target.value } }),
+      reportConsent: s.rep.consent, onConsent: e => this.setState({ rep: { ...s.rep, consent: e.target.checked } }),
+      reportDisabled: !s.rep.consent, reportOp: s.rep.consent ? '1' : '0.4', sendReport: () => s.rep.consent && this.setState({ screen: 'reportDone' }),
+      runs, hasRuns: runs.length > 0, noRuns: runs.length === 0, runSel,
+      continueRun: () => { if (s.runSel === 'cur') this.startRecord(); else this.showToast('في هذا النموذج: التدريب متاح على الإنسان ٧–١٠'); },
+      deleteRun: () => { if (s.runSel === 'cur') this.setState({ attempts: [], screen: 'recordings' }); else if (String(s.runSel).startsWith('a')) this.setState({ archived: s.archived.filter(r => r.id !== s.runSel), screen: 'recordings' }); else this.setState({ deletedSamples: [...s.deletedSamples, s.runSel], screen: 'recordings' }); },
+      askDeleteAll: () => this.setState({ confirmAll: true }), cancelDeleteAll: () => this.setState({ confirmAll: false }),
+      confirmAll: s.confirmAll, doDeleteAll: () => this.setState({ confirmAll: false, attempts: [], archived: [], deletedSamples: SAMPLE_RUNS.map(r => r.id) }),
+      themeOpts: [['light', 'فاتح'], ['dark', 'داكن']].map(([k, l]) => ({ label: l, bg: (dark ? 'dark' : 'light') === k ? th.sf : 'transparent', on: () => this.setState({ themePref: k }) })),
+      hasToast: !!s.toast, toast: s.toast,
+      wmInk: dark ? '#F6F1E7' : '#1F4F5C',
+      tabbed: is.home || is.recordings || is.settings,
+      tabs: { practice: { on: go('home'), c: is.home ? th.pr : th.mu }, recordings: { on: go('recordings'), c: is.recordings ? th.pr : th.mu }, settings: { on: go('settings'), c: is.settings ? th.pr : th.mu } }
+    };
+  }
+}
+</script>
+</body>
+</html>

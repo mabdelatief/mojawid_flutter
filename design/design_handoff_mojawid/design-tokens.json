@@ -1,0 +1,144 @@
+{
+  "color": {
+    "brand": {
+      "inkTeal": "#1F4F5C",
+      "nightInk": "#142A33",
+      "paper": "#F6F1E7",
+      "sand": "#E3D9C5",
+      "gold": "#C49A3F",
+      "paleGold": "#D8B566",
+      "goldText": "#9A7428"
+    },
+    "light": {
+      "bg": "#F6F1E7",
+      "surface": "#FFFDF8",
+      "surface2": "#EFE8DA",
+      "ink": "#1C2A30",
+      "muted": "#5E6461",
+      "line": "#E3D9C5",
+      "primary": "#1F4F5C",
+      "onPrimary": "#F6F1E7",
+      "accent": "#9A7428",
+      "mistake": "#B04A22",
+      "mistakeBg": "rgba(176,74,34,0.13)",
+      "uncertain": "#5A6E7B",
+      "uncertainBg": "rgba(90,110,123,0.13)",
+      "ok": "#2F6E4F",
+      "okBg": "rgba(47,110,79,0.12)",
+      "scrim": "rgba(20,30,35,0.38)"
+    },
+    "dark": {
+      "bg": "#142A33",
+      "surface": "#1A3540",
+      "surface2": "#21404B",
+      "ink": "#F6F1E7",
+      "muted": "#A9B4B3",
+      "line": "#2E4E59",
+      "primary": "#F6F1E7",
+      "onPrimary": "#142A33",
+      "accent": "#D8B566",
+      "mistake": "#F2946A",
+      "mistakeBg": "rgba(242,148,106,0.17)",
+      "uncertain": "#A6BAC6",
+      "uncertainBg": "rgba(166,186,198,0.15)",
+      "ok": "#86C9A2",
+      "okBg": "rgba(134,201,162,0.15)",
+      "scrim": "rgba(0,0,0,0.55)"
+    },
+    "tajweed": {
+      "light": {
+        "maddLazim": "#A3122A",
+        "maddWajib": "#D33B2C",
+        "maddJaiz": "#D7791B",
+        "ikhfaGhunnah": "#1F8A4C",
+        "qalqalah": "#2B7BBF",
+        "raaTafkheem": "#22408F",
+        "idghamSilent": "#9C9C96"
+      },
+      "dark": {
+        "maddLazim": "#FF7088",
+        "maddWajib": "#FF8A72",
+        "maddJaiz": "#F4AA5E",
+        "ikhfaGhunnah": "#66CF90",
+        "qalqalah": "#73B6F2",
+        "raaTafkheem": "#97A9FF",
+        "idghamSilent": "#86959A"
+      }
+    }
+  },
+  "font": {
+    "quran": "KFGQPC Uthmanic Script HAFS (prototype uses Amiri Quran)",
+    "uiArabic": "Noto Naskh Arabic 400/500/600/700",
+    "uiLatin": "Jost 400/500/600",
+    "logoArabic": "Aref Ruqaa 700 (logo + tagline only)",
+    "logoLatin": "Jost 500 (logo only)"
+  },
+  "type": {
+    "quranResult": {
+      "size": 25,
+      "lineHeight": 2.6
+    },
+    "quranSelect": {
+      "size": 25,
+      "lineHeight": 2.35
+    },
+    "quranRecord": {
+      "size": 24,
+      "lineHeight": 2.3
+    },
+    "screenTitle": {
+      "size": 19,
+      "weight": 700
+    },
+    "summary": {
+      "size": 20,
+      "weight": 700,
+      "lineHeight": 1.5
+    },
+    "body": {
+      "size": 15,
+      "lineHeight": 1.7
+    },
+    "caption": {
+      "size": 12.5
+    },
+    "primaryButton": {
+      "size": 19,
+      "weight": 700
+    },
+    "tabLabel": {
+      "size": 12
+    }
+  },
+  "radius": {
+    "button": 16,
+    "card": 18,
+    "segment": 14,
+    "segmentInner": 11,
+    "iconButton": 12,
+    "chip": 99,
+    "sheet": 24,
+    "dialog": 16
+  },
+  "size": {
+    "primaryButtonHeight": 56,
+    "secondaryButtonHeight": 46,
+    "iconButton": 40,
+    "recordButton": 88,
+    "recordRing": 112,
+    "tabIcon": 24,
+    "minHitTarget": 44
+  },
+  "spacing": {
+    "screenPadding": 16,
+    "cardPadding": 14,
+    "stackGap": 12,
+    "statusBarTop": 58,
+    "homeIndicatorBottom": 34
+  },
+  "shadow": {
+    "segmentSelected": "0 1px 3px rgba(0,0,0,0.12)",
+    "sheet": "0 -10px 30px rgba(0,0,0,0.12)",
+    "menu": "0 12px 30px rgba(0,0,0,0.15)"
+  }
+}
